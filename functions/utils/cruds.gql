@@ -1,0 +1,7 @@
+type Query {
+  allCrud: [Crud!]!
+}
+type Crud {
+  text: String!
+  archived: Boolean
+}
