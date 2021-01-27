@@ -4,8 +4,8 @@ import Button from "@material-ui/core/Button"
 import { Paper, Grid } from "@material-ui/core"
 // import Todo from "./Todo"
 import TodoList from "./TodoList"
-
 import { makeStyles } from "@material-ui/core/styles"
+import "./main.css"
 const useStyles = makeStyles(theme => ({
   main: {
     display: "flex",
@@ -17,12 +17,17 @@ const useStyles = makeStyles(theme => ({
     padding: "20px",
   },
   root: {
-    display: "flex",
-    flexWrap: "wrap",
+    display: "block",
     width: "40%",
     marginTop: "80px",
     margin: "auto",
     padding: "20px",
+  },
+  "@media (max-width:768px)": {
+    root: {
+      width: "80%",
+      margin: "30px",
+    },
   },
 }))
 
@@ -30,6 +35,22 @@ const AddTodoForm = () => {
   const classes = useStyles()
   const [text, setText] = useState("")
   const [crud, setCrud] = useState([])
+
+  let input
+  const editTodo = async text => {
+    text.archived = true
+
+    setText(text.text)
+    try {
+      await fetch(`/api/updateCrud`, {
+        method: "PUT",
+        body: JSON.stringify(text),
+      })
+      // setCrud(crud)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const resetForm = () => {
     setText("")
@@ -43,63 +64,72 @@ const AddTodoForm = () => {
       console.log(err)
     }
   }
-  const addTodo = data => {
-    return fetch("/api/createCrud", {
-      body: JSON.stringify(data),
-      method: "POST",
-    }).then(response => {
-      console.log(response, "RESP(((")
-      return response.json()
-    })
-  }
   useEffect(() => {
     LoadCrud()
   }, [])
 
   const handleSubmit = async e => {
     e.preventDefault()
-    const body = { text }
-    addTodo(body)
-      .then(response => {
-        console.log("API response", response)
-        resetForm()
-      })
+    if (text === "") {
+      alert("PLZ enter Value")
+    } else {
+      const body = text
+      try {
+        await fetch("/api/createCrud", {
+          body: JSON.stringify(body),
+          method: "POST",
+        })
 
-      .catch(error => {
-        console.log("API error", error)
-      })
+        resetForm()
+        LoadCrud()
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 
   return (
     <>
-      <Paper className={classes.main}>
-        <form onSubmit={handleSubmit}></form>
-        <Input
-          placeholder="Todo"
-          value={text}
-          inputProps={{
-            "aria-label": "Description",
-          }}
-          onChange={e => setText(e.target.value)}
+      <form onSubmit={handleSubmit}>
+        <Paper className={classes.main}>
+          <Input
+            placeholder="Todo"
+            value={text}
+            inputProps={{
+              "aria-label": "Description",
+            }}
+            onChange={e => setText(e.target.value)}
+            style={{
+              width: "40%",
+              marginLeft: "20%",
+            }}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            style={{ width: "10%", height: "7%" }}
+          >
+            Add
+          </Button>
+        </Paper>
+      </form>
+      {!crud.length ? (
+        <h3
           style={{
-            width: "40%",
-            marginLeft: "20%",
+            marginTop: "4rem",
+            display: "flex",
+            textAlign: "center",
+            justifyContent: "center",
           }}
-        />
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          style={{ width: "10%", height: "7%" }}
         >
-          Add
-        </Button>
-      </Paper>
-
-      <Paper className={classes.root}>
-        {/* <Grid container>{crud.map(text => text.text)}</Grid> */}
-        <TodoList crud={crud} />
-      </Paper>
+          fetching data...
+        </h3>
+      ) : (
+        <Paper className={classes.root}>
+          <TodoList crud={crud} refreshCruds={LoadCrud} editTodo={editTodo} />
+        </Paper>
+      )}
     </>
   )
 }

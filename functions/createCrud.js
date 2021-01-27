@@ -4,9 +4,7 @@ const { CREATE_LINK } = require("./utils/getLinkQueries.js")
 const sendQuery = require("./utils/sendQueries")
 const formattedResponse = require("./utils/formattedRes")
 exports.handler = async event => {
-  console.log(event, "EVENT")
-  const { text } = JSON.parse(event.body)
-  console.log(text, "TEXT")
+  const text = JSON.parse(event.body)
   const variables = { text, archived: false }
   try {
     const { createCrud: createdCrud } = await sendQuery(CREATE_LINK, variables)

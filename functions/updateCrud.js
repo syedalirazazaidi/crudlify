@@ -11,7 +11,7 @@ exports.handler = async event => {
   const variables = { text, archived, id }
   try {
     const { updateCrud: updatedCrud } = await sendQuery(UPDATE_LINK, variables)
-
+    console.log(updatedCrud, "UPDATED")
     return formattedResponse(200, updatedCrud)
   } catch (err) {
     console.error(err)

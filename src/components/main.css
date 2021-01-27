@@ -5,3 +5,37 @@
     margin: "auto";
     padding: "30px";
 }
+.list-todo{
+ 
+ margin-right: 70px;
+ padding: 10px;
+ margin-left: 23rem;
+ margin-top: -35px;
+}
+/* .ecl{
+    width: 50px; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
+} */
+.list-todo-ap{
+    /* padding: "7px 5px",
+    alignItems: "center",
+    listStyle: "none",
+    fontSize: "15px", */
+  }
+@media screen and (max-width:768px){
+    .list-todo{
+        margin-left: 6rem;
+        display: flex;
+        /* margin-left: 30px; */
+    
+    }
+    .main{
+        background-color: darkgreen;
+    }
+    .ecl{
+        width: 90px; 
+      overflow: hidden;
+      text-overflow: ellipsis; 
+    }
+ }
